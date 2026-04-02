@@ -1,0 +1,31 @@
+{
+  "name": "@animusystems/paperclip-plugin-self-improve",
+  "version": "0.1.0",
+  "description": "Self-improvement plugin for Paperclip agents. Tracks run outcomes, detects failure patterns, and generates improvement suggestions that refine agent instructions over time.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Animus Systems",
+  "paperclipPlugin": {
+    "manifest": "./dist/manifest.js",
+    "worker": "./dist/worker.js",
+    "ui": "./dist/ui/"
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@paperclipai/plugin-sdk": "^2026.318.0"
+  },
+  "devDependencies": {
+    "@paperclipai/shared": "^2026.318.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "esbuild": "^0.27.3",
+    "react": "^19.0.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}
