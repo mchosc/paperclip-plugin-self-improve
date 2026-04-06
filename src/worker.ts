@@ -461,13 +461,30 @@ const plugin = definePlugin({
         stateKey: STATE_KEY,
       })) ?? emptyState();
 
+      // Only include agents that still exist and are active
+      let activeAgentIds: Set<string> | null = null;
+      try {
+        const agentList = await ctx.agents.list(companyId as string);
+        if (Array.isArray(agentList) && agentList.length > 0) {
+          activeAgentIds = new Set(
+            agentList
+              .filter((a: any) => a.status !== "inactive" && a.status !== "disabled")
+              .map((a: any) => a.id),
+          );
+        }
+      } catch {}
+
       const agents = Object.values(state.performances)
+        .filter((a) => !activeAgentIds || activeAgentIds.has(a.agentId))
         .sort((a, b) => a.successRate - b.successRate);
 
-      const totalRuns = state.runs.length;
-      const totalCost = state.runs.reduce((sum, r) => sum + r.costUsd, 0);
+      const activeRuns = activeAgentIds
+        ? state.runs.filter((r) => activeAgentIds!.has(r.agentId))
+        : state.runs;
+      const totalRuns = activeRuns.length;
+      const totalCost = activeRuns.reduce((sum, r) => sum + r.costUsd, 0);
       const overallSuccessRate = totalRuns > 0
-        ? (state.runs.filter((r) => r.status === "succeeded").length / totalRuns) * 100
+        ? (activeRuns.filter((r) => r.status === "succeeded").length / totalRuns) * 100
         : 0;
 
       return {
